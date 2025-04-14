@@ -16,7 +16,7 @@ public class CustomerController {
 
     @PostMapping
     public Customer save(@RequestBody Customer customer) {
-        return customerService.save(customer);
+        return customerService.save(customer); 
     }
 
     @GetMapping("/{id}")
