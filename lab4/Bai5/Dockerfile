@@ -1,17 +1,12 @@
-# Sử dụng image golang làm base (ví dụ: golang:1.19)
-FROM golang:1.19
-
-# Thiết lập thư mục làm việc trong container
+# Build stage
+FROM golang:latest AS builder
 WORKDIR /app
-
-# Copy toàn bộ mã nguồn vào container
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
-# Build ứng dụng Go, tạo file thực thi tên "app"
-RUN go build -o app .
-
-# Expose cổng 8080 để ứng dụng có thể nhận yêu cầu
+# Run stage
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/main .
 EXPOSE 8080
-
-# Chạy ứng dụng khi container khởi động
-CMD ["./app"]
+CMD ["./main"]
